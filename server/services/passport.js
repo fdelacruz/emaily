@@ -14,14 +14,17 @@ passport.use(
     },
     (accessToken, refreshToken, profile, done) => {
       User.findOne({ googleId: profile.id }).then(existingUser => {
-          if (existingUser) {
-            // We already have a record with the given profile ID
-            // Do Nothing
-          } else {
-            // We don't have an user record with this ID, make a new one
-            new User({ googleId: profile.id }).save();
-          }
-        })
+        if (existingUser) {
+          // We already have a record with the given profile ID
+          // Do Nothing
+          done(null, existingUser);
+        } else {
+          // We don't have an user record with this ID, make a new one
+          new User({ googleId: profile.id })
+            .save()
+            .then(user => done(null, user));
+        }
+      });
     }
   )
 );
