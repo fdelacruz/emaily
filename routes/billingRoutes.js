@@ -8,8 +8,11 @@ module.exports = app => {
       currency: 'usd',
       description: '$5 for 5 credits',
       source: req.body.id
-    }).then((charge) => {
-      console.log(charge);
-    })
+    }).then(() => { 
+      req.user.credits += 5;
+      return req.user.save(); 
+    }).then(() => {
+      res.send(req.user)
+    });
   });
 };
